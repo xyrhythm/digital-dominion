@@ -10,6 +10,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 public class WebServer {
 
     private final static int PORT = 8080;
+    private final static ServerStatus serverStatus = new ServerStatus();
 
     public static void main(String[] args) throws Exception {
         Server server = JettyUtils.createJettyServer(PORT);
@@ -29,14 +30,13 @@ public class WebServer {
 
         // register servlets
         final ServletContextHandler root = new ServletContextHandler(contexts, "/", ServletContextHandler.NO_SECURITY);
-        JettyUtils.register(root, new HomePageServlet(), "home");
-        JettyUtils.register(root, new CreateGameServlet(), "create");
+        JettyUtils.register(root, new GameCreationServlet(serverStatus), "create/*");
+        JettyUtils.register(root, new GameViewServlet(serverStatus), "view/*");
+        JettyUtils.register(root, new GamePlayServlet(serverStatus), "play/*");
+        JettyUtils.register(root, new GameInfoServlet(serverStatus), "info/*");
 
         server.start();
         server.join();
     }
-
-
-
 
 }

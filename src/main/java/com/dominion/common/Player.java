@@ -32,10 +32,6 @@ public class Player {
         return info.name();
     }
 
-    public int order() {
-        return info.order();
-    }
-
     public void drawCards(int n) {
         if (n > 0) {
             for (int i = 0; i < n; ++i) {
@@ -135,6 +131,10 @@ public class Player {
         this.actionAllowrance = 1;
         this.buyAllowrance = 1;
         this.coinAllowrance = 0;
+    }
+
+    public int order() {
+        return 0;
     }
 
 }

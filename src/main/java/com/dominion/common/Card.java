@@ -1,8 +1,11 @@
 package com.dominion.common;
 
 import com.dominion.common.actions.CardActions;
+import com.dominion.utils.CardSerializer;
 import java.util.List;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+@JsonSerialize(using = CardSerializer.class)
 public enum Card {
 
     // Treasure cards
@@ -74,6 +77,10 @@ public enum Card {
 
     public String image() {
         return imageFile;
+    }
+
+    public String desc() {
+        return desc;
     }
 
     public boolean isAction() {

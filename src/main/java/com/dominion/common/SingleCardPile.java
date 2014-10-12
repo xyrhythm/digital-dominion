@@ -1,8 +1,15 @@
 package com.dominion.common;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class SingleCardPile {
 
+    @JsonProperty("card")
     private final Card card;
+
+    @JsonProperty("size")
     private int size;
 
     public SingleCardPile(final Card card, final int size) {
@@ -10,10 +17,12 @@ public class SingleCardPile {
         this.size = size;
     }
 
+    @JsonProperty("card")
     public Card card() {
         return card;
     }
 
+    @JsonProperty("size")
     public int size() {
         return size;
     }

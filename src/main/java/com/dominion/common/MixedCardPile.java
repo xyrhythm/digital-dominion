@@ -2,14 +2,20 @@ package com.dominion.common;
 
 import java.util.Collections;
 import java.util.List;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class MixedCardPile {
+
+    @JsonProperty("cards")
     private final List<Card> cards;
 
     public MixedCardPile(final List<Card> cards) {
         this.cards = cards;
     }
 
+    @JsonProperty("cards")
     public List<Card> cards() {
         return cards;
     }

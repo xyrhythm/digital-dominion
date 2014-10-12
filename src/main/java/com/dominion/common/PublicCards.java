@@ -1,13 +1,23 @@
 package com.dominion.common;
 
 import java.util.List;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class PublicCards {
 
-    private final List<SingleCardPile> treasureCards;
-    private final List<SingleCardPile> victoryCards;
-    private final List<SingleCardPile> actionCards;
-    private final MixedCardPile trashPile;
+    @JsonProperty("treasure")
+    private List<SingleCardPile> treasureCards;
+
+    @JsonProperty("victory")
+    private List<SingleCardPile> victoryCards;
+
+    @JsonProperty("action")
+    private List<SingleCardPile> actionCards;
+
+    @JsonProperty("trash")
+    private MixedCardPile trashPile;
 
     public PublicCards(final List<SingleCardPile> treasureCards, List<SingleCardPile> victoryCards, List<SingleCardPile> actionCards, MixedCardPile trashPile) {
         this.treasureCards = treasureCards;
@@ -74,5 +84,45 @@ public class PublicCards {
 
     public void addTrashCards(List<Card> trashCards) {
         this.trashPile.addCards(trashCards);
+    }
+
+    @JsonProperty("treasure")
+    public List<SingleCardPile> getTreasure() {
+        return treasureCards;
+    }
+
+    @JsonProperty("victory")
+    public List<SingleCardPile> getvictory() {
+        return victoryCards;
+    }
+
+    @JsonProperty("action")
+    public List<SingleCardPile> getAction() {
+        return actionCards;
+    }
+
+    @JsonProperty("trash")
+    public MixedCardPile gettrash() {
+        return trashPile;
+    }
+
+    @JsonProperty("treasure")
+    public void setTreasure(List<SingleCardPile> treasureCards) {
+        this.treasureCards = treasureCards;
+    }
+
+    @JsonProperty("victory")
+    public void setvictory(List<SingleCardPile> victoryCards) {
+        this.victoryCards = victoryCards;
+    }
+
+    @JsonProperty("action")
+    public void setAction(List<SingleCardPile> actionCards) {
+        this.actionCards = actionCards;
+    }
+
+    @JsonProperty("trash")
+    public void settrash(MixedCardPile trashPile) {
+        this.trashPile = trashPile;
     }
 }
