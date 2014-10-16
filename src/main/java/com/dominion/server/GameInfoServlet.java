@@ -2,6 +2,9 @@ package com.dominion.server;
 
 import com.dominion.common.Constants;
 import com.dominion.common.Game;
+import com.dominion.common.GameInfo;
+import com.dominion.common.MixedCardPile;
+import com.dominion.common.Player;
 import com.dominion.common.PublicCards;
 import com.dominion.utils.JsonUtils;
 import java.io.IOException;
@@ -35,11 +38,12 @@ public class GameInfoServlet extends DefaultServlet {
             final Game game = serverStatus.getGame(gameId);
             if (query.equals("public_cards")) {
                 final PublicCards cards = game.getPublicCards();
-                System.out.println(JsonUtils.writeJsonObjectToString(cards));
                 response.setContentType(Constants.JSON_TYPE);
                 response.getWriter().print(JsonUtils.writeJsonObjectToString(cards));
-            } else if (query.equals("public_cards")) {
-
+            } else if (query.equals("stats")) {
+                final GameInfo info = game.getGameInfo();
+                response.setContentType(Constants.JSON_TYPE);
+                response.getWriter().print(JsonUtils.writeJsonObjectToString(info));
             } else {
                 response.setContentType("text");
                 response.getWriter().print("unknown request: " + pathInfo);
@@ -49,11 +53,27 @@ public class GameInfoServlet extends DefaultServlet {
             final int gameId = Integer.parseInt(params[2]);
             final String usrName = params[4];
             final String query = params[5];
-            if (query.equals("stats")) {
-
-            } else {
-                response.setContentType("text");
-                response.getWriter().print("unknown request: " + pathInfo);
+            final Game game = serverStatus.getGame(gameId);
+            final Player player = game.getPlayerByName(usrName);
+            if (player != null) {
+                final MixedCardPile pile;
+                response.setContentType(Constants.JSON_TYPE);
+                if (query.equals("hand")) {
+                    pile = player.hand;
+                    response.getWriter().print(JsonUtils.writeJsonObjectToString(pile));
+                } else if (query.equals("discard")) {
+                    pile = player.discardPile;
+                    response.getWriter().print(JsonUtils.writeJsonObjectToString(pile));
+                } else if (query.equals("deck")) {
+                    pile = player.deck;
+                    response.getWriter().print("{\"size\": " + pile.size() + "}");
+                } else if (query.equals("playArea")) {
+                    pile = player.playArea;
+                    response.getWriter().print(JsonUtils.writeJsonObjectToString(pile));
+                } else {
+                    response.setContentType("text");
+                    response.getWriter().print("unknown request: " + pathInfo);
+                }
             }
         } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -65,8 +85,26 @@ public class GameInfoServlet extends DefaultServlet {
     protected void doPost(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
         final String pathInfo = request.getPathInfo();
+        if (GAME_INFO.matcher(pathInfo).matches()) {
+            String[] params = pathInfo.split("/");
+            final int gameId = Integer.parseInt(params[2]);
+            final String query = params[3];
+            final Game game = serverStatus.getGame(gameId);
+            if (query.equals("public_cards")) {
+                final PublicCards cards = game.getPublicCards();
+                response.setContentType(Constants.JSON_TYPE);
+                response.getWriter().print(JsonUtils.writeJsonObjectToString(cards));
+            } else if (query.equals("stats")) {
+                game.init();
+                game.play();
 
-        if (USER_INFO.matcher(pathInfo).matches()) {
+                response.setContentType("text/html");
+                response.setStatus(HttpServletResponse.SC_OK);
+            } else {
+                response.setContentType("text");
+                response.getWriter().print("unknown request: " + pathInfo);
+            }
+        } else if (USER_INFO.matcher(pathInfo).matches()) {
         } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }

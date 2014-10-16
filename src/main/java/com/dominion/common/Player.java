@@ -1,5 +1,6 @@
 package com.dominion.common;
 
+import com.dominion.common.Constants.Phase;
 import com.dominion.common.actions.Action;
 import com.dominion.common.evaluators.EligibilityEvaluator;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class Player {
     public int actionAllowrance;
     public int buyAllowrance;
     public int coinAllowrance;
+    private Phase phase;
 
     public Player(final PlayerInfo info) {
         this.info = info;
@@ -26,6 +28,7 @@ public class Player {
         this.actionAllowrance = 1;
         this.buyAllowrance = 1;
         this.coinAllowrance = 0;
+        this.phase = Phase.NONE;
     }
 
     public String name() {
@@ -135,6 +138,14 @@ public class Player {
 
     public int order() {
         return 0;
+    }
+
+    public Phase phase() {
+        return phase;
+    }
+
+    public void setPhase(Phase phase) {
+        this.phase = phase;
     }
 
 }

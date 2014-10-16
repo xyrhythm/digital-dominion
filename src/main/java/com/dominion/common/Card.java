@@ -9,26 +9,26 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 public enum Card {
 
     // Treasure cards
-    COPPER("Copper", CardType.TREASURE, 0, 1, 0, "", "", null),
-    SILVER("Silver", CardType.TREASURE, 3, 2, 0, "", "", null),
-    GOLD("Gold", CardType.TREASURE, 6, 3, 0, "", "", null),
+    COPPER("Copper", CardType.TREASURE, 0, 1, 0, "/resource/img/copper.jpg", "", null),
+    SILVER("Silver", CardType.TREASURE, 3, 2, 0, "/resource/img/silver.jpg", "", null),
+    GOLD("Gold", CardType.TREASURE, 6, 3, 0, "/resource/img/gold.jpg", "", null),
 
     // Victory cards
-    ESTATE("estate", CardType.VICTORY, 2, 0, 1, "", "", null),
-    DUCHY("duchy", CardType.VICTORY, 5, 0, 3, "", "", null),
-    PROVINCE("province", CardType.VICTORY, 8, 0, 6, "", "", null),
+    ESTATE("estate", CardType.VICTORY, 2, 0, 1, "/resource/img/estate.jpg", "", null),
+    DUCHY("duchy", CardType.VICTORY, 5, 0, 3, "/resource/img/duchy.jpg", "", null),
+    PROVINCE("province", CardType.VICTORY, 8, 0, 6, "/resource/img/province.jpg", "", null),
 
     // Action cards
-    CELLAR("cellar", CardType.ACTION, 2, 0, 0, "", "", CardActions.cellarAction),
-    VILLAGE("village", CardType.ACTION, 3, 0, 0, "", "", CardActions.villageAction),
-    WORKSHOP("workshop", CardType.ACTION, 3, 0, 0, "", "", CardActions.workshopAction),
-    REMODLE("remodle", CardType.ACTION, 4, 0, 0, "", "", CardActions.remodelAction),
-    MARKET("market", CardType.ACTION, 5, 0, 0, "", "", CardActions.marketAction),
-    MOAT("moat", CardType.ACTION_ANTIATTACK, 2, 0, 0, "", "", CardActions.moatAction),
-    WOODCUTTER("woodcutter", CardType.ACTION, 3, 0, 0, "", "", CardActions.woodcutterAction),
-    MILITIA("militia", CardType.ACTION_ATTACK, 4, 0, 0, "", "", CardActions.militiaAction),
-    SMITHY("smithy", CardType.ACTION, 4, 0, 0, "", "", CardActions.smithyAction),
-    MINE("mine", CardType.ACTION, 5, 0, 0, "", "", CardActions.mineAction),
+    CELLAR("cellar", CardType.ACTION, 2, 0, 0, "/resource/img/cellar.jpg", "", CardActions.cellarAction),
+    VILLAGE("village", CardType.ACTION, 3, 0, 0, "/resource/img/village.jpg", "", CardActions.villageAction),
+    WORKSHOP("workshop", CardType.ACTION, 3, 0, 0, "/resource/img/workshop.jpg", "", CardActions.workshopAction),
+    REMODLE("remodle", CardType.ACTION, 4, 0, 0, "/resource/img/remodel.jpg", "", CardActions.remodelAction),
+    MARKET("market", CardType.ACTION, 5, 0, 0, "/resource/img/market.jpg", "", CardActions.marketAction),
+    MOAT("moat", CardType.ACTION_ANTIATTACK, 2, 0, 0, "/resource/img/moat.jpg", "", CardActions.moatAction),
+    WOODCUTTER("woodcutter", CardType.ACTION, 3, 0, 0, "/resource/img/woodcutter.jpg", "", CardActions.woodcutterAction),
+    MILITIA("militia", CardType.ACTION_ATTACK, 4, 0, 0, "/resource/img/militia.jpg", "", CardActions.militiaAction),
+    SMITHY("smithy", CardType.ACTION, 4, 0, 0, "/resource/img/smithy.jpg", "", CardActions.smithyAction),
+    MINE("mine", CardType.ACTION, 5, 0, 0, "/resource/img/mine.jpg", "", CardActions.mineAction),
     ;
 
     public enum CardType {

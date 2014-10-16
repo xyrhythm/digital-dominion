@@ -4,30 +4,51 @@
 	<meta charset="UTF-8">
 	<title>Dominion - Game Room</title>
 	<link rel="stylesheet" href="/css/playPage.css">
+	<script type="text/javascript" src="/javascript/common.js"></script>
 </head>
 
 <body>
-	<div id="public">
-		<script type="text/javascript" src="/javascript/publicCards.js"></script>
-	</div>
-<br>
-<br>
+	<div id="main">
+		<div id="public">
+			<div id="action">
+				<canvas id="actionCards"></canvas>
+			</div>
 
-	<div id="self">
-		<script type="text/javascript" src="/javascript/selfPlayer.js"></script>
-	</div>
-<br>
-<br>
+			<div id="otherCards">
+				<div id="treasure">
+					<canvas id="treasureCards"></canvas>
+				</div>
+				
+				<div id="victory">
+					<canvas id="victoryCards"></canvas>
+				</div>
 
-	<div id="others">
-		<script type="text/javascript" src="/javascript/otherPlayers.js"></script>
-	</div>
-<br>
-<br>
+				<div id="trash">
+					<canvas id="trashCards"></canvas>
+				</div>
+			</div>
+			
+			<script type="text/javascript" src="/javascript/publicCards.js"></script>
+		</div>
+ 
+		<div id="player">
+			<div id="self">
+				<canvas id="selfPlayer"></canvas>
+			</div>
+			<!-- <script type="text/javascript" src="/javascript/selfPlayer.js"></script> -->
 
-	<div id="footer">
-		<script type="text/javascript" src="/javascript/utilityButtons.js"></script>
+			<div id="others">
+				<script type="text/javascript" src="/javascript/otherPlayers.js"></script>
+			</div>
+		</div>
+		
+		<div id="footer">
+			<script type="text/javascript" src="/javascript/utilityButtons.js"></script>
+		</div>
 	</div>
+
+	<!-- <script type="text/javascript" src="/javascript/serverPolling.js"></script> -->
+	<script type="text/javascript" src="/javascript/webSocket.js"></script>
 </body>
 
 </html>

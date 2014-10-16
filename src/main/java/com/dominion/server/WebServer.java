@@ -34,6 +34,7 @@ public class WebServer {
         JettyUtils.register(root, new GameViewServlet(serverStatus), "view/*");
         JettyUtils.register(root, new GamePlayServlet(serverStatus), "play/*");
         JettyUtils.register(root, new GameInfoServlet(serverStatus), "info/*");
+        JettyUtils.register(root, new EventWebSocketServlet(serverStatus), "event/*");
 
         server.start();
         server.join();

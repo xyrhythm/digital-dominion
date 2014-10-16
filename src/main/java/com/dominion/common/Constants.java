@@ -20,6 +20,10 @@ public class Constants {
         PLAYER_ALL, PLAYER_SELF, PLAYER_OTHERS, PLAYER_OTHER_ONE, PLAYER_OTHER_SET;
     }
 
+    public enum Phase {
+        NONE, ACTION, BUY, CLEANUP;
+    }
+
     private static final ArrayList<Card> commonTreasure = new ArrayList<>();
     static {
         commonTreasure.add(Card.COPPER);

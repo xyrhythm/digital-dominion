@@ -1,8 +1,21 @@
 package com.dominion.common;
 
+import com.dominion.common.Card.CardType;
+import com.dominion.common.Constants.Phase;
+import com.dominion.common.evaluators.ActionCardEvaluator;
+import com.dominion.common.evaluators.AllPassEvaluator;
+import com.dominion.common.evaluators.CardTypeEvaluator;
+import com.dominion.common.playerAction.PlayerAction;
+import com.dominion.common.playerAction.PlayerBeginPhaseAction;
+import com.dominion.server.EventWebSocket;
 import com.dominion.utils.GameUtils;
 import com.google.common.base.Preconditions;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import org.apache.commons.collections.CollectionUtils;
 
 public class Game {
 
@@ -75,6 +88,21 @@ public class Game {
         return playerList;
     }
 
+    private Player getPlayerById(int idx) {
+        return playerList.get(idx % getNumPlayer());
+    }
+
+    public Player getPlayerByName(final String usrName) {
+        Player player = null;
+        for (Player p : playerList) {
+            if (p.name().equals(usrName)) {
+                player = p;
+                break;
+            }
+        }
+        return player;
+    }
+
     public boolean isStarted() {
         return isStarted;
     }
@@ -85,19 +113,60 @@ public class Game {
 
     // Game Play functions
     private PublicCards publicCards;
+    private Queue<ActionPlayerPair> inQueue;
+    private Queue<PlayerAction> outQueue;
+    private int curPlayerIdx;
+    private EventWebSocket socket;
+
+    public EventWebSocket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(EventWebSocket socket) {
+        this.socket = socket;
+    }
 
     public PublicCards getPublicCards() {
         return publicCards;
+    }
+
+    public PlayerAction getPlayerAction() {
+        if (outQueue.size() == 0) {
+            return null;
+        } else {
+            return outQueue.peek();
+        }
     }
 
     public void init() {
         publicCards = GameUtils.initPublicCards(getDeck(), getNumPlayer());
         initPlayerHands();
         // set Player ordering: TODO
+        // after ordering, sort the playerList in order
+        setActive();
+        outQueue = new LinkedList<PlayerAction>();
+        curPlayerIdx = 0;
+        PlayerBeginPhaseAction firstPlayerAction = new PlayerBeginPhaseAction(getPlayerById(curPlayerIdx), Phase.ACTION);
+        outQueue.add(firstPlayerAction);
+        // inQueue = new LinkedList<ActionPlayerPair>();
     }
 
-    public void play() {
-
+    public void play() throws IOException, InterruptedException {
+        while (!isOver()) {
+            if (outQueue.size() == 0) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                if (socket.isActive()) {
+                    socket.sendMessage("action phase begin");
+                } else {
+                    Thread.sleep(500);
+                }
+            }
+        }
     }
 
     public void close() {
@@ -126,4 +195,96 @@ public class Game {
         }
     }
 
+    private boolean isOver() {
+        return publicCards.provinceEmpty() || publicCards.numEmptyPiles() >= 3;
+    }
+
+    private void actionPhase(Player player) {
+        while (player.actionAllowrance > 0) {
+            if (player.skipActionPhase())
+                break;
+            List<Card> cards = player.chooseCardsToPlay(new ActionCardEvaluator(), 1);
+            if (!CollectionUtils.isEmpty(cards)) {
+                Card card = cards.get(0);
+                playCard(player, card);
+            }
+            player.actionAllowrance -= 1;
+        }
+    }
+
+    private void buyPhase(Player player) {
+        List<Card> cards = player.chooseCardsToPlay(new CardTypeEvaluator(CardType.TREASURE), -1);
+        for (Card card : cards) {
+            playCard(player, card);
+        }
+        player.gainCards(player.buyAllowrance, new AllPassEvaluator());
+    }
+
+    private void cleanupPhase(Player player) {
+        player.cleanUpOneRound();
+    }
+
+
+
+    private void playCard(Player player, Card card) {
+        player.playOneCard(card);
+    }
 }
+
+//        if (card.cardType() == CardType.TREASURE) {
+//            player.coinAllowrance += card.treasurePoint();
+//        } else if (card.isAction()) {
+//            List<ActionPlayerPair> actions = card.actions();
+//            int idx = player.order();
+//
+//            while (!CollectionUtils.isEmpty(actions)) {
+//                List<ActionPlayerPair> followingActions = new ArrayList<ActionPlayerPair>();
+//                for (ActionPlayerPair pair : actions) {
+//                    List<ActionPlayerPair> possibleActions = null;
+//                    Action currentAction = pair.action;
+//                    switch (pair.playerSet) {
+//                    case PLAYER_SELF:
+//                        possibleActions = currentAction.apply(player, publicCards);
+//                        followingActions.addAll(possibleActions);
+//                        break;
+//                    case PLAYER_ALL:
+//                        for (int i = 0; i < numPlayers; ++i) {
+//                            Player receiver = playersList.get((idx + i) % numPlayers);
+//                            if (card.cardType().equals(CardType.ACTION_ATTACK)) {
+//                                // ask for antiattack
+//                                if (receiver.antiAttack())
+//                                    break;
+//                            }
+//                            possibleActions = currentAction.apply(receiver, publicCards);
+//                            followingActions.addAll(possibleActions);
+//                        }
+//                        break;
+//                    case PLAYER_OTHERS:
+//                        for (int i = 1; i < numPlayers; ++i) {
+//                            Player receiver = playersList.get((idx + i) % numPlayers);
+//                            if (card.cardType().equals(CardType.ACTION_ATTACK)) {
+//                                // ask for antiattack
+//                                if (receiver.antiAttack())
+//                                    break;
+//                            }
+//                            possibleActions = currentAction.apply(receiver, publicCards);
+//                            followingActions.addAll(possibleActions);
+//                        }
+//                        break;
+//                    case PLAYER_OTHER_ONE:
+//                        Player receiver = player.chooseOneReceiver();
+//                        possibleActions = currentAction.apply(receiver, publicCards);
+//                        followingActions.addAll(possibleActions);
+//                        break;
+//                    default:
+//                        break;
+//                    }
+//                    actions.remove(0);
+//                    actions.addAll(followingActions);
+//                }
+//            }
+//        } else {
+//            LOG.warn("Invalid card type to play in middle of a game");
+//        }
+//    }
+// }

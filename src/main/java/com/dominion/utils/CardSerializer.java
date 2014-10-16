@@ -21,7 +21,6 @@ public final class CardSerializer extends JsonSerializer<Card> {
         generator.writeFieldName("desc");
         generator.writeString(card.desc());
         generator.writeEndObject();
-
     }
 
 }
