@@ -1,17 +1,16 @@
 package com.dominion.common;
 
 import com.dominion.common.Card.CardType;
-import com.dominion.common.Constants.Phase;
 import com.dominion.common.evaluators.ActionCardEvaluator;
 import com.dominion.common.evaluators.AllPassEvaluator;
 import com.dominion.common.evaluators.CardTypeEvaluator;
 import com.dominion.common.playerAction.PlayerAction;
-import com.dominion.common.playerAction.PlayerBeginPhaseAction;
 import com.dominion.server.EventWebSocket;
 import com.dominion.utils.GameUtils;
 import com.google.common.base.Preconditions;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -59,6 +58,11 @@ public class Game {
 
     public int getNumPlayer() {
         return playerList.size();
+    }
+
+    public String getNextPlayerName() {
+        curPlayerIdx = (curPlayerIdx + 1) % getNumPlayer();
+        return playerList.get(curPlayerIdx).name();
     }
 
     public GameInfo getGameInfo() {
@@ -116,15 +120,7 @@ public class Game {
     private Queue<ActionPlayerPair> inQueue;
     private Queue<PlayerAction> outQueue;
     private int curPlayerIdx;
-    private EventWebSocket socket;
-
-    public EventWebSocket getSocket() {
-        return socket;
-    }
-
-    public void setSocket(EventWebSocket socket) {
-        this.socket = socket;
-    }
+    private final HashMap<String, EventWebSocket> sockets = new HashMap<String, EventWebSocket>();
 
     public PublicCards getPublicCards() {
         return publicCards;
@@ -144,11 +140,9 @@ public class Game {
         // set Player ordering: TODO
         // after ordering, sort the playerList in order
         setActive();
+
         outQueue = new LinkedList<PlayerAction>();
         curPlayerIdx = 0;
-        PlayerBeginPhaseAction firstPlayerAction = new PlayerBeginPhaseAction(getPlayerById(curPlayerIdx), Phase.ACTION);
-        outQueue.add(firstPlayerAction);
-        // inQueue = new LinkedList<ActionPlayerPair>();
     }
 
     public void play() throws IOException, InterruptedException {
@@ -160,11 +154,7 @@ public class Game {
                     e.printStackTrace();
                 }
             } else {
-                if (socket.isActive()) {
-                    socket.sendMessage("action phase begin");
-                } else {
-                    Thread.sleep(500);
-                }
+
             }
         }
     }
@@ -229,6 +219,17 @@ public class Game {
     private void playCard(Player player, Card card) {
         player.playOneCard(card);
     }
+
+    public void addSocketForUser(EventWebSocket socket, String userName) {
+        System.out.println(socket);
+        System.out.println(userName);
+        sockets.put(userName, socket);
+    }
+
+    public EventWebSocket getSocketForUser(final String userName) {
+        return sockets.get(userName);
+    }
+
 }
 
 //        if (card.cardType() == CardType.TREASURE) {

@@ -96,8 +96,6 @@ public class GameInfoServlet extends DefaultServlet {
                 response.getWriter().print(JsonUtils.writeJsonObjectToString(cards));
             } else if (query.equals("stats")) {
                 game.init();
-                game.play();
-
                 response.setContentType("text/html");
                 response.setStatus(HttpServletResponse.SC_OK);
             } else {

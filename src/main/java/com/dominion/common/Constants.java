@@ -21,7 +21,32 @@ public class Constants {
     }
 
     public enum Phase {
-        NONE, ACTION, BUY, CLEANUP;
+        NONE("none"),
+        ACTION("action"),
+        BUY("buy"),
+        CLEANUP("cleanup");
+
+        private final String desc;
+
+        Phase(String desc) {
+            this.desc = desc;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+        public static Phase fromString(String phase) {
+            if (phase.equalsIgnoreCase(ACTION.getDesc())) {
+                return ACTION;
+            } else if (phase.equalsIgnoreCase(BUY.getDesc())) {
+                return BUY;
+            } else if (phase.equalsIgnoreCase(CLEANUP.getDesc())) {
+                return CLEANUP;
+            } else {
+                return NONE;
+            }
+        }
     }
 
     private static final ArrayList<Card> commonTreasure = new ArrayList<>();

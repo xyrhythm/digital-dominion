@@ -1,7 +1,7 @@
 package com.dominion.common;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)

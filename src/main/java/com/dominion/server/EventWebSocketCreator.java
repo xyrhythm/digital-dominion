@@ -8,7 +8,7 @@ import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
 
 public class EventWebSocketCreator implements WebSocketCreator {
 
-    private final static Pattern EVENT_GAME = Pattern.compile("/event/[0-9]*");
+    private final static Pattern EVENT_GAME = Pattern.compile("/event/[0-9]*/[a-zA-Z0-9]*");
     private final ServerStatus serverStatus;
 
     public EventWebSocketCreator(ServerStatus serverStatus) {
@@ -23,10 +23,12 @@ public class EventWebSocketCreator implements WebSocketCreator {
         EventWebSocket socket = null;
         if (EVENT_GAME.matcher(pathInfo).matches()) {
             final int gameId = Integer.parseInt(pathInfo.split("/")[2]);
-            final Game game = serverStatus.getGame(gameId);
-            if (game != null) {
-                socket = new EventWebSocket(gameId);
-                game.setSocket(socket);
+            final String userName = pathInfo.split("/")[3];
+            Game game = serverStatus.getGame(gameId);
+            if (game != null && game.containsPlayer(userName)) {
+                socket = new EventWebSocket(game, userName);
+                System.out.println(socket);
+                game.addSocketForUser(socket, userName);
             }
         }
         return socket;

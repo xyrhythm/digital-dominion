@@ -42,7 +42,7 @@ public class GamePlayServlet extends DefaultServlet {
         } else if (GAME_JOIN.matcher(pathInfo).matches()) {
             final int gameId = Integer.parseInt(pathInfo.substring(6));
             final Game game = serverStatus.getGame(gameId);
-            if (game != null) {
+            if (game != null && !game.isStarted()) {
                 response.setContentType("text/html");
                 response.getWriter().print(GAME_JOIN_FORM);
             } else {

@@ -39,8 +39,8 @@ public class GameViewServlet extends DefaultServlet {
         System.out.println("get: " + contextInfo + " " + pathInfo + " " + request.getContentType());
         if (request.getContentType() == Constants.JSON_TYPE) {
             if (StringUtils.isEmpty(pathInfo)) {
-                response.setContentType("text/html");
-                response.getWriter().print("Under construction");
+                response.setContentType(Constants.JSON_TYPE);
+                response.getWriter().print(JsonUtils.writeJsonArray(serverStatus.getGameInfoList()));
             } else if (GAMEID.matcher(pathInfo).matches()) {
                 // list game waiting room
                 final int gameId = Integer.parseInt(pathInfo.substring(6));

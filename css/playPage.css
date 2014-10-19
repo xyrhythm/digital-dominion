@@ -43,27 +43,60 @@ body {
     width: 40%;
     float: left;
 }
-#player {
-    background-color: white;
-    height: 38%;
+#playInfo {
+    box-sizing: border-box;
+    height: 7%;
     width: 100%;
-    border: 2px black;
+    border-bottom: 2px solid black;
+}
+#selfPlay {
+    box-sizing: border-box;
+    background-color: white;
+    height: 100%;
+    width: 50%;
+    float: left;
+    border-right: 2px solid black;
+}
+#othersPlay {
+    background-color: white;
+    height: 100%;
+    float: right;
+    width: 50%;
+}
+#player {
+    box-sizing: border-box;
+    background-color: white;
+    height: 30%;
+    width: 100%;
+    border-bottom: 2px solid black;
 }
 #self {
+    box-sizing: border-box;
     background-color: cornsilk;
     height: 100%;
-    width: 80%;
+    width: 50%;
     float: left;
+    border-right: 2px solid black;
+}
+#playArea {
+    box-sizing: border-box;
+    background-color: cornsilk;
+    height: 100%;
+    width: 30%;
+    float: left;
+    border-right: 2px solid black;
 }
 #others {
     background-color: lawngreen;
     height: 100%;
     width: 20%;
     float: right;
+    overflow: hidden;
 }
 #footer {
     background-color: white;
     text-align: center;
-    height: 2%;
+    font-size: 200%;
+    height: 2.5%;
 }
 </style>

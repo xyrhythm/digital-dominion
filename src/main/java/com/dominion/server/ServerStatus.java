@@ -1,7 +1,9 @@
 package com.dominion.server;
 
 import com.dominion.common.Game;
+import com.dominion.common.GameInfo;
 import com.dominion.common.Player;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ServerStatus {
@@ -42,6 +44,14 @@ public class ServerStatus {
             game = gameList.get(gameId);
         }
         return game;
+    }
+
+    public ArrayList<GameInfo> getGameInfoList() {
+        ArrayList<GameInfo> gameInfoList = new ArrayList<GameInfo>();
+        for (Game game : gameList.values()) {
+            gameInfoList.add(game.getGameInfo());
+        }
+        return gameInfoList;
     }
 
 }

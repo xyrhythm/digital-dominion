@@ -4,7 +4,10 @@ var treasureCanvas = "treasureCards";
 var trashCanvas = "trashCards";
 var victoryCanvas = "victoryCards";
 var cardBackImgSrc = "/resource/img/cardBack.jpg";
-
+var blankCardImgSrc = "/resource/img/blank.jpg";
+var jsonType = "application/json";
+var gameTableId = "game_view";
+var viewUrl = "http://localhost:8080/view";
 
 // common functions
 function xhrGet(reqUri,callback,responseType) {
@@ -35,10 +38,11 @@ function Game(obj) {
 	this.players = [];
 	this.deck = "";
 	this.creator = "";
+	this.active = false;
 
 	for (var prop in obj) this[prop] = obj[prop];
 	this.list = function() {
-		var table = document.getElementById(tableId);
+		var table = document.getElementById(gameTableId);
 		var row = table.insertRow(-1);
 
 		var c0 = row.insertCell(0);
@@ -54,7 +58,11 @@ function Game(obj) {
 		c3.innerHTML = this.deck;
 
 		var c4 = row.insertCell(4);
-		c4.innerHTML = genUrl(this.id);
+		if (this.active === true) {
+			c4.innerHTML = "In Play";
+		} else {
+			c4.innerHTML = genUrl(this.id);
+		}
 	} 
 }
 
@@ -85,8 +93,27 @@ function Card(obj) {
 
 		var imageObj = new Image();
 		imageObj.onload = function() {
-        	// cntx.drawImage(imageObj, 0, 0, imageObj.width, imageObj.height, dx, dy, cardWidth, cardHeight);
+        	cntx.drawImage(imageObj, 0, 0, imageObj.width, imageObj.height, dx, dy, cardWidth, cardHeight);
       	};
       	imageObj.src = this.img;
 	} 
 }
+
+function Message(obj) {
+	this.gameStatus = "";
+	this.phaseName = "";
+	this.cardName = "";
+
+	for (var prop in obj) this[prop] = obj[prop];
+}
+
+function getCardXY(canvasName, idx, cardWidth, cardHeight) {
+
+}
+
+function sleep(callback, millis) {
+    setTimeout(function()
+            { callback(); }
+    , millis);
+}
+

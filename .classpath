@@ -7,10 +7,8 @@
 	<classpathentry kind="lib" path="/Users/yxiao/codes/digital-dominion/jars/jetty-all-9.2.3.v20140905.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/servlet-api/3.0/servlet-api-3.0.jar"/>
 	<classpathentry kind="var" path="M2_REPO/com/google/guava/guava/16.0.1/guava-16.0.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/com/fasterxml/jackson/core/jackson-annotations/2.2.2/jackson-annotations-2.2.2.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/codehaus/jackson/jackson-mapper-asl/1.7.2/jackson-mapper-asl-1.7.2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/com/fasterxml/jackson/core/jackson-core/2.2.2/jackson-core-2.2.2.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/codehaus/jackson/jackson-core-asl/1.7.2/jackson-core-asl-1.7.2.jar"/>
+	<classpathentry kind="lib" path="/Users/yxiao/.m2/repository/org/codehaus/jackson/jackson-core-asl/1.9.13/jackson-core-asl-1.9.13.jar"/>
+	<classpathentry kind="lib" path="/Users/yxiao/.m2/repository/org/codehaus/jackson/jackson-mapper-asl/1.9.13/jackson-mapper-asl-1.9.13.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

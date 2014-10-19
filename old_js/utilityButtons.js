@@ -1,3 +1,5 @@
+var jsonType = "application/json";
+var divId = "footer";
 var path = window.location.pathname;
 var pathInfo = path.split("/");
 var gameId = pathInfo[3];
@@ -35,6 +37,13 @@ var load = function() {
 			element.type = "button";
 			element.value = "Start Game";
 			element.onclick = function() {
+				// var xhr = new XMLHttpRequest();
+				// xhr.open("POST", gameUrl, true);
+				// xhr.onload = function() {
+				// 	xhrGet(gameUrl, load, jsonType);
+				// }
+				// xhr.send();
+				//window.location.reload();
 				ws.send("start");
 				div.innerHtml = "";
 			}
@@ -47,3 +56,4 @@ var load = function() {
 
 xhrGet(gameUrl, load, jsonType);
 
+// TODO: add return to home button?
