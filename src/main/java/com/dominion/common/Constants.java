@@ -24,7 +24,8 @@ public class Constants {
         NONE("none"),
         ACTION("action"),
         BUY("buy"),
-        CLEANUP("cleanup");
+        CLEANUP("cleanup"),
+        ATTACK("attack");
 
         private final String desc;
 
@@ -36,16 +37,45 @@ public class Constants {
             return desc;
         }
 
-        public static Phase fromString(String phase) {
-            if (phase.equalsIgnoreCase(ACTION.getDesc())) {
-                return ACTION;
-            } else if (phase.equalsIgnoreCase(BUY.getDesc())) {
-                return BUY;
-            } else if (phase.equalsIgnoreCase(CLEANUP.getDesc())) {
-                return CLEANUP;
-            } else {
-                return NONE;
+        private static HashMap<String, Phase> stringToPhase = new HashMap<String, Phase>();
+        static {
+            for (Phase phase : Phase.values()) {
+                stringToPhase.put(phase.getDesc(), phase);
             }
+        }
+
+        public static Phase fromString(String phase) {
+            return stringToPhase.get(phase);
+        }
+    }
+
+    public enum PlayerAction {
+        NONE("none"),
+        GAIN("gain"),
+        DISCARD("discard"),
+        WAIT("wait"),
+        DRAW("draw"),
+        TRASH("trash");
+
+        private final String desc;
+
+        PlayerAction(String desc) {
+            this.desc = desc;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+        private static HashMap<String, PlayerAction> stringToAction = new HashMap<String, PlayerAction>();
+        static {
+            for (PlayerAction action : PlayerAction.values()) {
+                stringToAction.put(action.getDesc(), action);
+            }
+        }
+
+        public static PlayerAction fromString(String action) {
+            return stringToAction.get(action);
         }
     }
 
@@ -70,7 +100,7 @@ public class Constants {
         firstGame.add(Card.MILITIA);
         firstGame.add(Card.MINE);
         firstGame.add(Card.MOAT);
-        firstGame.add(Card.REMODLE);
+        firstGame.add(Card.REMODEL);
         firstGame.add(Card.SMITHY);
         firstGame.add(Card.VILLAGE);
         firstGame.add(Card.WOODCUTTER);
@@ -84,4 +114,7 @@ public class Constants {
         popularDeckset.put("First Game", firstGameDeck);
     }
 
+    public enum PlayResult {
+        SUCCESS, INVALID_MOVE, NO_ACTION;
+    }
 }

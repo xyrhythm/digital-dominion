@@ -17,7 +17,6 @@ body {
     background-color: white;
     height: 60%;
     width: 100%;
-    border-bottom: 2px solid black;
 }
 #action {
     height: 50%;
@@ -38,7 +37,6 @@ body {
     float: left;
 }
 #trash {
-    background-color: cornsilk;
     height: 100%;
     width: 40%;
     float: left;
@@ -47,7 +45,6 @@ body {
     box-sizing: border-box;
     height: 7%;
     width: 100%;
-    border-bottom: 2px solid black;
 }
 #selfPlay {
     box-sizing: border-box;
@@ -55,7 +52,6 @@ body {
     height: 100%;
     width: 50%;
     float: left;
-    border-right: 2px solid black;
 }
 #othersPlay {
     background-color: white;
@@ -68,26 +64,22 @@ body {
     background-color: white;
     height: 30%;
     width: 100%;
-    border-bottom: 2px solid black;
 }
 #self {
     box-sizing: border-box;
-    background-color: cornsilk;
     height: 100%;
     width: 50%;
     float: left;
-    border-right: 2px solid black;
 }
 #playArea {
     box-sizing: border-box;
-    background-color: cornsilk;
     height: 100%;
     width: 30%;
     float: left;
-    border-right: 2px solid black;
+    overflow: auto;
+    font-size: 50%;
 }
 #others {
-    background-color: lawngreen;
     height: 100%;
     width: 20%;
     float: right;
@@ -97,6 +89,6 @@ body {
     background-color: white;
     text-align: center;
     font-size: 200%;
-    height: 2.5%;
+    height: 3%;
 }
 </style>

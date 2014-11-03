@@ -5,12 +5,11 @@ import com.dominion.common.Card.CardType;
 
 public class IncreaseCostEvaluator implements EligibilityEvaluator {
 
-    private final Card oldCard;
     private final int incrementCost;
     private final CardType cardType;
+    private Card oldCard;
 
-    public IncreaseCostEvaluator(final Card oldCard, final int incrementCost, final CardType cardType) {
-        this.oldCard = oldCard;
+    public IncreaseCostEvaluator(final int incrementCost, final CardType cardType) {
         this.incrementCost = incrementCost;
         this.cardType = cardType;
     }
@@ -21,4 +20,7 @@ public class IncreaseCostEvaluator implements EligibilityEvaluator {
         return card.cost() <= oldCard.cost() + incrementCost && (null == cardType || card.cardType().equals(cardType));
     }
 
+    public void setOldCard(final Card card) {
+        this.oldCard = card;
+    }
 }

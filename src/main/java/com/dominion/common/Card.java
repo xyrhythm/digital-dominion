@@ -1,34 +1,36 @@
 package com.dominion.common;
 
 import com.dominion.common.actions.CardActions;
+import com.dominion.common.actions.StaticAction;
 import com.dominion.utils.CardSerializer;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonSerialize(using = CardSerializer.class)
 public enum Card {
 
     // Treasure cards
-    COPPER("Copper", CardType.TREASURE, 0, 1, 0, "/resource/img/copper.jpg", "", null),
-    SILVER("Silver", CardType.TREASURE, 3, 2, 0, "/resource/img/silver.jpg", "", null),
-    GOLD("Gold", CardType.TREASURE, 6, 3, 0, "/resource/img/gold.jpg", "", null),
+    COPPER("copper", CardType.TREASURE, 0, 1, 0, "/resource/img/copper.jpg", "", null, null),
+    SILVER("silver", CardType.TREASURE, 3, 2, 0, "/resource/img/silver.jpg", "", null, null),
+    GOLD("gold", CardType.TREASURE, 6, 3, 0, "/resource/img/gold.jpg", "", null, null),
 
     // Victory cards
-    ESTATE("estate", CardType.VICTORY, 2, 0, 1, "/resource/img/estate.jpg", "", null),
-    DUCHY("duchy", CardType.VICTORY, 5, 0, 3, "/resource/img/duchy.jpg", "", null),
-    PROVINCE("province", CardType.VICTORY, 8, 0, 6, "/resource/img/province.jpg", "", null),
+    ESTATE("estate", CardType.VICTORY, 2, 0, 1, "/resource/img/estate.jpg", "", null, null),
+    DUCHY("duchy", CardType.VICTORY, 5, 0, 3, "/resource/img/duchy.jpg", "", null, null),
+    PROVINCE("province", CardType.VICTORY, 8, 0, 6, "/resource/img/province.jpg", "", null, null),
 
     // Action cards
-    CELLAR("cellar", CardType.ACTION, 2, 0, 0, "/resource/img/cellar.jpg", "", CardActions.cellarAction),
-    VILLAGE("village", CardType.ACTION, 3, 0, 0, "/resource/img/village.jpg", "", CardActions.villageAction),
-    WORKSHOP("workshop", CardType.ACTION, 3, 0, 0, "/resource/img/workshop.jpg", "", CardActions.workshopAction),
-    REMODLE("remodle", CardType.ACTION, 4, 0, 0, "/resource/img/remodel.jpg", "", CardActions.remodelAction),
-    MARKET("market", CardType.ACTION, 5, 0, 0, "/resource/img/market.jpg", "", CardActions.marketAction),
-    MOAT("moat", CardType.ACTION_ANTIATTACK, 2, 0, 0, "/resource/img/moat.jpg", "", CardActions.moatAction),
-    WOODCUTTER("woodcutter", CardType.ACTION, 3, 0, 0, "/resource/img/woodcutter.jpg", "", CardActions.woodcutterAction),
-    MILITIA("militia", CardType.ACTION_ATTACK, 4, 0, 0, "/resource/img/militia.jpg", "", CardActions.militiaAction),
-    SMITHY("smithy", CardType.ACTION, 4, 0, 0, "/resource/img/smithy.jpg", "", CardActions.smithyAction),
-    MINE("mine", CardType.ACTION, 5, 0, 0, "/resource/img/mine.jpg", "", CardActions.mineAction),
+    CELLAR("cellar", CardType.ACTION, 2, 0, 0, "/resource/img/cellar.jpg", "", new StaticAction(1, 0, 0), CardActions.cellarAction),
+    VILLAGE("village", CardType.ACTION, 3, 0, 0, "/resource/img/village.jpg", "", new StaticAction(2, 0, 0), CardActions.villageAction),
+    WORKSHOP("workshop", CardType.ACTION, 3, 0, 0, "/resource/img/workshop.jpg", "", null, CardActions.workshopAction),
+    REMODEL("remodel", CardType.ACTION, 4, 0, 0, "/resource/img/remodel.jpg", "", null, CardActions.remodelAction),
+    MARKET("market", CardType.ACTION, 5, 0, 0, "/resource/img/market.jpg", "", new StaticAction(1, 1, 1), CardActions.marketAction),
+    MOAT("moat", CardType.ACTION_ANTIATTACK, 2, 0, 0, "/resource/img/moat.jpg", "", null, CardActions.moatAction),
+    WOODCUTTER("woodcutter", CardType.ACTION, 3, 0, 0, "/resource/img/woodcutter.jpg", "", new StaticAction(0, 1, 2), CardActions.woodcutterAction),
+    MILITIA("militia", CardType.ACTION_ATTACK, 4, 0, 0, "/resource/img/militia.jpg", "", new StaticAction(0, 0, 2), CardActions.militiaAction),
+    SMITHY("smithy", CardType.ACTION, 4, 0, 0, "/resource/img/smithy.jpg", "", null, CardActions.smithyAction),
+    MINE("mine", CardType.ACTION, 5, 0, 0, "/resource/img/mine.jpg", "", null, CardActions.mineAction),
     ;
 
     public enum CardType {
@@ -42,9 +44,11 @@ public enum Card {
     private final int victoryPoint;
     private final String imageFile;
     private final String desc;
-    private final List<ActionPlayerPair> actions;
+    private final StaticAction staticAction;
+    private final ArrayList<ActionPlayerPair> otherActions;
 
-    Card(final String name, final CardType type, final int cost, final int treasurePoint, final int victoryPoint, final String imageFile, final String desc, final List<ActionPlayerPair> actions) {
+    Card(final String name, final CardType type, final int cost, final int treasurePoint, final int victoryPoint,
+            final String imageFile, final String desc, final StaticAction staticAction, final ArrayList<ActionPlayerPair> otherActions) {
         this.name = name;
         this.type = type;
         this.cost = cost;
@@ -52,7 +56,8 @@ public enum Card {
         this.victoryPoint = victoryPoint;
         this.imageFile = imageFile;
         this.desc = desc;
-        this.actions = actions;
+        this.staticAction = staticAction;
+        this.otherActions = otherActions;
     }
 
     public String cardName() {
@@ -88,8 +93,30 @@ public enum Card {
                 || cardType() == CardType.ACTION_ANTIATTACK;
     }
 
-    public List<ActionPlayerPair> actions() {
-        return actions;
+    public boolean isTreasure() {
+        return cardType() == CardType.TREASURE;
     }
 
+    public boolean isVictory() {
+        return cardType() == CardType.VICTORY;
+    }
+
+    public StaticAction staticAction() {
+        return staticAction;
+    }
+
+    public ArrayList<ActionPlayerPair> actions() {
+        return otherActions;
+    }
+
+    private static final HashMap<String, Card> nameToCard = new HashMap<String, Card>();
+    static {
+        for (Card card : Card.values()) {
+            nameToCard.put(card.name, card);
+        }
+    }
+
+    public static Card getCardFromName(final String cardName) {
+        return nameToCard.get(cardName.toLowerCase());
+    }
 }

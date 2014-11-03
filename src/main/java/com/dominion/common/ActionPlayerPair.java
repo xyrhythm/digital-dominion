@@ -11,5 +11,4 @@ public class ActionPlayerPair {
         this.action = action;
         this.playerSet = playerSet;
     }
-
 }

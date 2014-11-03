@@ -1,12 +1,17 @@
 package com.dominion.common.actions;
 
-import com.dominion.common.ActionPlayerPair;
+import com.dominion.common.Card;
+import com.dominion.common.Constants.PlayerAction;
+import com.dominion.common.EventMessage;
 import com.dominion.common.Player;
-import com.dominion.common.PublicCards;
-import java.util.List;
+import java.util.ArrayList;
 
 public interface Action {
 
-    public List<ActionPlayerPair> apply(Player player, PublicCards publicCard);
+    public ArrayList<EventMessage> apply(Player player);
+
+    public PlayerAction getPlayerAction();
+
+    public boolean isCardEligible(Card card);
 
 }

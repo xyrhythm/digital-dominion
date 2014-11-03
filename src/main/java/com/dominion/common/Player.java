@@ -1,11 +1,11 @@
 package com.dominion.common;
 
 import com.dominion.common.Constants.Phase;
+import com.dominion.common.Constants.PlayerAction;
 import com.dominion.common.actions.Action;
 import com.dominion.common.evaluators.EligibilityEvaluator;
 import java.util.ArrayList;
 import java.util.List;
-import javax.management.InvalidApplicationException;
 
 public class Player {
 
@@ -18,6 +18,8 @@ public class Player {
     public int buyAllowrance;
     public int coinAllowrance;
     private Phase phase;
+    private PlayerAction action;
+    public int round = 0;
 
     public Player(final PlayerInfo info) {
         this.info = info;
@@ -29,6 +31,7 @@ public class Player {
         this.buyAllowrance = 1;
         this.coinAllowrance = 0;
         this.phase = Phase.NONE;
+        this.action = PlayerAction.NONE;
     }
 
     public String name() {
@@ -51,60 +54,12 @@ public class Player {
         }
     }
 
-    public List<Card> discardCards(final int numCards, final EligibilityEvaluator evaluator) throws InvalidApplicationException {
-        List<Card> discardCards = chooseCardsFromHand(numCards, evaluator);
-        hand.removeCards(discardCards);
-        discardPile.addCards(discardCards);
-        return discardCards;
-    }
-
-
-
-    public List<Card> gainCards(int numCards, final EligibilityEvaluator evaluator) {
-        List<Card> newCards = chooseCardsFromPublic(numCards, evaluator);
-        hand.addCards(newCards);
-        return newCards;
-    }
-
-    public List<Card> trashCards(final int numCards, final EligibilityEvaluator evaluator) throws InvalidApplicationException {
-        List<Card> trashCards = chooseCardsFromHand(numCards, evaluator);
-        hand.removeCards(trashCards);
-        return trashCards;
-    }
-
     public boolean hasCard(Card card) {
         return hand.contains(card);
     }
 
-    public boolean revealCard(Card card) {
-        return true;
-    }
-
-    public boolean antiAttack() {
-        return hasCard(Card.MOAT) && revealCard(Card.MOAT);
-    }
-
-    public void respondAction(Action action, PublicCards publicCards) {
-        if (antiAttack()) {
-            // TODO: antiattck processing
-        } else {
-            action.apply(this, publicCards);
-        }
-    }
-
-    private List<Card> chooseCardsFromHand(final int numCard, final EligibilityEvaluator evaluator)
-            throws InvalidApplicationException {
-        if (hand.isEmpty()) {
-            throw new InvalidApplicationException("cannot choose a card from an empty hand");
-        }
-        if (numCard < 0 || numCard > hand.size()) {
-            throw new IllegalArgumentException("player has a hand of size " + hand.size() + " but the requried discard card num is " + numCard);
-        }
-        return null;
-    }
-
-    private List<Card> chooseCardsFromPublic(final int numCard, final EligibilityEvaluator evaluator) {
-        return null;
+    public boolean hasAntiAttack() {
+        return hasCard(Card.MOAT);
     }
 
     public void playOneCard(Card card) {
@@ -120,20 +75,43 @@ public class Player {
         return null;
     }
 
-    public boolean skipActionPhase() {
-        // TODO Auto-generated method stub
-        return false;
-    }
 
     public void cleanUpOneRound() {
         discardPile.addCards(hand.cards());
         discardPile.addCards(playArea.cards());
-        hand = null;
-        playArea = null;
+        hand = new MixedCardPile(new ArrayList<Card>());
+        playArea = new MixedCardPile(new ArrayList<Card>());
         drawCards(Constants.NORMAL_HAND_SIZE);
         this.actionAllowrance = 1;
         this.buyAllowrance = 1;
         this.coinAllowrance = 0;
+
+        this.discardAllowrance = 0;
+        this.discardCards = 0;
+        this.discardEvaluator = null;
+
+        this.gainAllowrance = 0;
+        this.gainCards = 0;
+        this.gainEvaluator = null;
+        this.keepInHand = false;
+
+        this.drawAllowrance = 0;
+
+        this.trashAllowrance = 0;
+        this.trashCards = 0;
+        this.trashEvaluator = null;
+
+        this.oldCard = null;
+        this.curAction = null;
+        this.playingCard = null;
+
+        this.setPlayerAction(PlayerAction.NONE);
+        this.numWait = 0;
+
+        this.round += 1;
+
+        this.phase = Phase.NONE;
+        this.underAttack = false;
     }
 
     public int order() {
@@ -148,4 +126,85 @@ public class Player {
         this.phase = phase;
     }
 
+    public PlayerAction playerAction() {
+        return action;
+    }
+
+    public void setPlayerAction(final PlayerAction action) {
+        this.action = action;
+    }
+
+    public void setActionAllowrance(int i) {
+        this.actionAllowrance = i;
+    }
+
+    public void setBuyAllowrance(int i) {
+        this.buyAllowrance = i;
+    }
+
+    public void setCoinAllowrance(int i) {
+        this.coinAllowrance = i;
+    }
+
+    // wait actoin
+    public int numWait = 0;
+
+    // discard action
+    public int discardAllowrance = 0;
+    public int discardCards = 0;
+    public EligibilityEvaluator discardEvaluator;
+
+    // gain action
+    public int gainAllowrance = 0;
+    public int gainCards = 0;
+    public EligibilityEvaluator gainEvaluator;
+    public boolean keepInHand = false;
+
+    // draw action
+    public int drawAllowrance = 0;
+
+    // trash action
+    public int trashAllowrance = 0;
+    public int trashCards = 0;
+    public EligibilityEvaluator trashEvaluator;
+
+    //
+    public Card oldCard = null;
+
+    public Action curAction = null;
+    public Card playingCard = null;
+    public boolean underAttack = false;
+
+    @Override
+    public boolean equals(Object that) {
+        if (this == that) {
+            return true;
+        }
+
+        if (!(that instanceof Player)) {
+            return false;
+        }
+
+        Player player = (Player) that;
+        return player.name().equals(this.name());
+    }
+
+    public int victoryPoints() {
+        int victoryPoints = 0;
+        for (Card card : allCards()) {
+            if (card.isVictory()) {
+                victoryPoints += card.victoryPoint();
+            }
+        }
+        return victoryPoints;
+    }
+
+    private ArrayList<Card> allCards() {
+        ArrayList<Card> cards = new ArrayList<Card>();
+        cards.addAll(hand.cards());
+        cards.addAll(deck.cards());
+        cards.addAll(playArea.cards());
+        cards.addAll(discardPile.cards());
+        return cards;
+    }
 }

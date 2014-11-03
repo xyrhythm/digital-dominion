@@ -34,10 +34,11 @@ public class SingleCardPile {
         size += i;
     }
 
-    public Card drawOneCard() {
-        assert size > 1 : "Cannot draw card from an empty pile";
+    public boolean drawOneCard() {
+        if (size < 1)
+            return false;
         size--;
-        return card;
+        return true;
     }
 
     public boolean isEmpty() {

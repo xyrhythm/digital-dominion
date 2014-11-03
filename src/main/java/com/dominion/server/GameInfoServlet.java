@@ -5,6 +5,7 @@ import com.dominion.common.Game;
 import com.dominion.common.GameInfo;
 import com.dominion.common.MixedCardPile;
 import com.dominion.common.Player;
+import com.dominion.common.PlayerStatus;
 import com.dominion.common.PublicCards;
 import com.dominion.utils.JsonUtils;
 import java.io.IOException;
@@ -30,7 +31,7 @@ public class GameInfoServlet extends DefaultServlet {
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
         final String pathInfo = request.getPathInfo();
-        System.out.println(pathInfo);
+        // System.out.println(pathInfo);
         if (GAME_INFO.matcher(pathInfo).matches()) {
             String[] params = pathInfo.split("/");
             final int gameId = Integer.parseInt(params[2]);
@@ -44,6 +45,10 @@ public class GameInfoServlet extends DefaultServlet {
                 final GameInfo info = game.getGameInfo();
                 response.setContentType(Constants.JSON_TYPE);
                 response.getWriter().print(JsonUtils.writeJsonObjectToString(info));
+            } else if (query.equals("cur_player")) {
+                final PlayerStatus playerStatus = game.getCurrentPlayerStatus();
+                response.setContentType(Constants.JSON_TYPE);
+                response.getWriter().print(JsonUtils.writeJsonObjectToString(playerStatus));
             } else {
                 response.setContentType("text");
                 response.getWriter().print("unknown request: " + pathInfo);

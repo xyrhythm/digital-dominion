@@ -1,9 +1,10 @@
 package com.dominion.common.actions;
 
-import com.dominion.common.ActionPlayerPair;
+import com.dominion.common.Card;
+import com.dominion.common.Constants.PlayerAction;
+import com.dominion.common.EventMessage;
 import com.dominion.common.Player;
-import com.dominion.common.PublicCards;
-import java.util.List;
+import java.util.ArrayList;
 
 public class StaticAction implements Action {
 
@@ -16,6 +17,7 @@ public class StaticAction implements Action {
     private final int actionIncrease;
     private final int buyIncrease;
     private final int coinIncrease;
+    private final PlayerAction action = PlayerAction.NONE;
 
     public StaticAction(final int actionIncrease, final int buyIncrease, final int coinIncrease) {
         if (actionIncrease < 0 || buyIncrease < 0 || coinIncrease < 0) {
@@ -27,12 +29,20 @@ public class StaticAction implements Action {
     }
 
     @Override
-    public List<ActionPlayerPair> apply(Player receiver, PublicCards publicCards) {
-        assert null != receiver : "Null receiver in action";
-        receiver.actionAllowrance += actionIncrease;
-        receiver.buyAllowrance += buyIncrease;
-        receiver.coinAllowrance += coinIncrease;
+    public ArrayList<EventMessage> apply(Player player) {
+        player.actionAllowrance += actionIncrease;
+        player.buyAllowrance += buyIncrease;
+        player.coinAllowrance += coinIncrease;
         return null;
     }
 
+    @Override
+    public PlayerAction getPlayerAction() {
+        return action;
+    }
+
+    @Override
+    public boolean isCardEligible(Card card) {
+        return true;
+    }
 }

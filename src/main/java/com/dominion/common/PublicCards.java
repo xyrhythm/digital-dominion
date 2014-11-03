@@ -86,6 +86,47 @@ public class PublicCards {
         this.trashPile.addCards(trashCards);
     }
 
+    public void addOneTrashCard(Card card) {
+        this.trashPile.addOneCard(card);
+    }
+
+    public boolean removeOneCard(Card card) {
+        if (card.isAction()) {
+            return removeOneCardFromPile(actionCards, card);
+        }
+
+        if (card.isTreasure()) {
+            return removeOneCardFromPile(treasureCards, card);
+        }
+
+        if (card.isVictory()) {
+            return removeOneCardFromPile(victoryCards, card);
+        }
+
+        return false;
+    }
+
+    private boolean removeOneCardFromPile(List<SingleCardPile> piles, Card card) {
+        for (SingleCardPile pile : piles) {
+            if (pile.card() == card) {
+                return pile.drawOneCard();
+            }
+        }
+        return false;
+    }
+
+    public boolean containCard(Card card) {
+        Boolean isContain = false;
+
+        if ((card.isAction() && actionCards.contains(card))
+                || (card.isVictory() && victoryCards.contains(card))
+                || (card.isTreasure() && treasureCards.contains(card))) {
+            isContain = true;
+        }
+
+        return isContain;
+    }
+
     @JsonProperty("treasure")
     public List<SingleCardPile> getTreasure() {
         return treasureCards;
@@ -125,4 +166,5 @@ public class PublicCards {
     public void settrash(MixedCardPile trashPile) {
         this.trashPile = trashPile;
     }
+
 }

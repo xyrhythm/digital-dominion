@@ -74,7 +74,7 @@ function Card(obj) {
 
 	for (var prop in obj) this[prop] = obj[prop];
 
-	this.draw = function(canvasName, idx, cardWidth, cardHeight) {
+	this.draw = function(canvasName, idx, cardWidth, cardHeight, size) {
 		var canvas = document.getElementById(canvasName);
 		var cntx = canvas.getContext("2d");
 		var dx = 0;
@@ -94,26 +94,46 @@ function Card(obj) {
 		var imageObj = new Image();
 		imageObj.onload = function() {
         	cntx.drawImage(imageObj, 0, 0, imageObj.width, imageObj.height, dx, dy, cardWidth, cardHeight);
+        	if (canvasName === actionCanvas || canvasName === victoryCanvas) {
+        		cntx.font = "15pt Calibri";
+        		cntx.fillStyle = "red";
+        	    cntx.fillText(size.toString(), dx+0.08*cardWidth, dy+0.1*cardHeight);
+        	}
       	};
       	imageObj.src = this.img;
 	} 
 }
 
 function Message(obj) {
+	this.type = "";
 	this.gameStatus = "";
 	this.phaseName = "";
 	this.cardName = "";
+	this.logInfo = "";
+	this.playerAction = "";
+	this.command = "";
+	this.playResult = "";
 
 	for (var prop in obj) this[prop] = obj[prop];
-}
-
-function getCardXY(canvasName, idx, cardWidth, cardHeight) {
-
 }
 
 function sleep(callback, millis) {
     setTimeout(function()
             { callback(); }
     , millis);
+}
+
+function isActionCard(cardName) {
+	cardName = cardName.toLowerCase();
+	return cardName === "cellar" || cardName == "village"
+		|| cardName === "workshop" || cardName == "remodel"
+		|| cardName === "market" || cardName == "moat"
+		|| cardName === "woodcutter" || cardName == "militia"
+		|| cardName === "smithy" || cardName == "mine";
+}
+
+function isTreasureCard(cardName) {
+	cardName = cardName.toLowerCase();
+	return cardName === "copper" || cardName === "silver" || cardName === "gold";
 }
 
